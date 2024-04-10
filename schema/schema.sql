@@ -28,3 +28,54 @@ CREATE TABLE logged_time (
   FOREIGN KEY(task_id) REFERENCES tasks(id) ON DELETE CASCADE,
   FOREIGN KEY(worker_id) REFERENCES workers(id) ON DELETE CASCADE
 ) ENGINE=INNODB;
+
+INSERT INTO locations (name)
+VALUES
+  ('Argentina'),
+  ('America'),
+  ('Egypt'),
+  ('Switzerland'),
+  ('Peru'),
+  ('China'),
+  ('South Africa'),
+  ('Greece'),
+  ('South America'),
+  ('Gabon'),
+  ('Morocco'),
+  ('Indonesia');
+
+INSERT INTO tasks (description, location_id)
+VALUES
+  ('Plumbing & Medical Gas', 1),
+  ('Soft Flooring and Base', 2),
+  ('Check Electrical and Fire Alarm', 3),
+  ('Check the HVAC', 4),
+  ('inspect the Landscaping & Irrigation', 5),
+  ('build Structural and Misc Steel (Fabrication)', 6),
+  ('apply the Waterproofing & Caulking', 7),
+  ('perform the Landscaping & Irrigation', 8),
+  ('inspect Epoxy Flooring', 9);
+
+INSERT INTO workers (username, hourly_wage)
+VALUES 
+  ('tcowserf', 35.92),
+  ('bcrossmang', 14.55),
+  ('ksinnetth', 28.65),
+  ('nhumani', 43.69),
+  ('ewooffj', 37.66),
+  ('bwaterk', 28.65),
+  ('marntzenl', 31.52),
+  ('akellum', 31.52),
+  ('bgarreltsm', 14.49);
+
+INSERT INTO logged_time (time_seconds, task_id, worker_id)
+VALUES 
+  (180000, 1, 1),
+  (216000, 2, 2),
+  (115200, 3, 3),
+  (288000, 4, 4),
+  (252000, 5, 5),
+  (187200, 6, 6),
+  (252300, 7, 7),
+  (205200, 8, 8),
+  (162000, 9, 9);

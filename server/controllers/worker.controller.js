@@ -19,4 +19,16 @@ export class WorkerController {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   }
+
+  async getAllWorkers(req, res)  {
+    try {
+      const workers = await workerService.getAllWorkers();
+      // respond with json
+      res.json(workers);
+    } catch (error) {
+      // handle errors and send an appropriate response
+      console.error('Error fetching all workers:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
 }
