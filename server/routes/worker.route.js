@@ -6,5 +6,6 @@ const workerController = new WorkerController();
 
 router.get('/byworker', workerController.getByWorker);
 router.get('/allWorkers', workerController.getAllWorkers);
+router.get('/byWorkerId/:id', workerController.getTotalCostByWorkerId);
 
 export default router;

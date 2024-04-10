@@ -31,4 +31,19 @@ export class WorkerController {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   }
+
+  async getTotalCostByWorkerId(req, res)  {
+    try {
+
+      const workerId = req.params.id;
+
+      const workers = await workerService.getTotalCostAllLocationTasksByWorkerId(workerId);
+      // respond with json
+      res.json(workers);
+    } catch (error) {
+      // handle errors and send an appropriate response
+      console.error('Error fetching labor costs:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
 }
