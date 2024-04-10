@@ -34,3 +34,7 @@ by bringing the DB container down:
 ```bash
 docker compose down
 ```
+
+### Edits 
+
+Converted the build-schema file to DOS/Windows-style line endings to ensure the script is executable. May need to reverse later. 
