@@ -6,7 +6,7 @@ CREATE TABLE locations (
 CREATE TABLE tasks (
   id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   description VARCHAR(100) NOT NULL,
-
+  status VARCHAR(50) NOT NULL,
   location_id INT(11) NOT NULL,
 
   FOREIGN KEY(location_id) REFERENCES locations(id) ON DELETE CASCADE
@@ -44,17 +44,17 @@ VALUES
   ('Morocco'),
   ('Indonesia');
 
-INSERT INTO tasks (description, location_id)
+INSERT INTO tasks (description, status, location_id)
 VALUES
-  ('Plumbing & Medical Gas', 1),
-  ('Soft Flooring and Base', 2),
-  ('Check Electrical and Fire Alarm', 3),
-  ('Check the HVAC', 4),
-  ('inspect the Landscaping & Irrigation', 5),
-  ('build Structural and Misc Steel (Fabrication)', 6),
-  ('apply the Waterproofing & Caulking', 7),
-  ('perform the Landscaping & Irrigation', 8),
-  ('inspect Epoxy Flooring', 9);
+  ('Plumbing & Medical Gas', 'complete', 1),
+  ('Soft Flooring and Base', 'complete', 2),
+  ('Check Electrical and Fire Alarm', 'complete', 3),
+  ('Check the HVAC', 'incomplete', 4),
+  ('inspect the Landscaping & Irrigation', 'incomplete', 5),
+  ('build Structural and Misc Steel (Fabrication)', 'complete', 6),
+  ('apply the Waterproofing & Caulking', 'incomplete', 7),
+  ('perform the Landscaping & Irrigation', 'complete', 8),
+  ('inspect Epoxy Flooring', 'incomplete', 9);
 
 INSERT INTO workers (username, hourly_wage)
 VALUES 
@@ -71,6 +71,7 @@ VALUES
 INSERT INTO logged_time (time_seconds, task_id, worker_id)
 VALUES 
   (180000, 1, 1),
+  (10000, 1, 1),
   (216000, 2, 2),
   (115200, 3, 3),
   (288000, 4, 4),

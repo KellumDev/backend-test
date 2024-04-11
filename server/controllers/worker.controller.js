@@ -34,10 +34,10 @@ export class WorkerController {
 
   async getTotalCostByWorkerId(req, res)  {
     try {
-
-      const workerId = req.params.id;
-
-      const workers = await workerService.getTotalCostAllLocationTasksByWorkerId(workerId);
+   
+      const reqBody = req.body;
+      const workers = await workerService.getTotalCostAllLocationTasksByWorkerId(reqBody);
+      
       // respond with json
       res.json(workers);
     } catch (error) {
