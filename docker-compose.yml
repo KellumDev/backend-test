@@ -45,3 +45,19 @@ services:
     depends_on:
       db:
         condition: service_healthy
+  gui:
+    image: phpmyadmin/phpmyadmin:latest 
+    ports:
+      - "0.0.0.0:8080:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: limble-test
+      PMA_PASSWORD: limble-test-password
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - phpmyadmin_data:/var/lib/phpmyadmin
+
+volumes:
+  phpmyadmin_data:

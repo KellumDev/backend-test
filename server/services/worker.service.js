@@ -36,6 +36,12 @@ export class WorkerService {
 
       let condition = `w.id = ${workerId}`;
       
+      // if a set of worker ids is passed
+      if (workerIds && workerIds.length > 0) {
+        const workerIdList = workerIds.join(', ');  
+        condition += ` AND w.id IN (${workerIdList})`;
+      }
+
       // handling for optional filter on location
       if (locationId !== null && locationId !== undefined) {
         condition += ` AND loc.id = ${locationId}`;
@@ -44,7 +50,7 @@ export class WorkerService {
       // handling for optional filter on status
       if (status !== null && status !== undefined) {
         condition += ` AND t.status = '${status}'`;
-      }
+      } 
 
       connection = await DB_POOL.getConnection();
       connection.queryOptions = { timeout: 10000 };
