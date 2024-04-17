@@ -34,11 +34,6 @@ export class LocationService {
         whereClause += `l.id = ${locationId}`;
       }
 
-      // if (workerId && workerId.length > 0) {
-      //   const workerIdList = workerId.join(', ');  
-      //   whereClause += ` OR w.id IN (${workerIdList})`;
-      // }
-
       if (Array.isArray(workerId) && workerId.length > 0) {
         const workerIdList = workerId.join(", ");
         whereClause += ` OR w.id IN (${workerIdList})`;
@@ -83,7 +78,6 @@ export class LocationService {
           location_name, task_description, performed_by, status;
       `;
       
-      console.log('***************SQL QUERY: ', sqlQuery)
       connection = await DB_POOL.getConnection();
       connection.queryOptions = { timeout: 10000 };
       const rows = await connection.query(sqlQuery);
