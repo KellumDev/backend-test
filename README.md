@@ -67,41 +67,38 @@ This endpoint retrieves total labor cost of a worker across all tasks and locati
 - `workerId` (required): The ID of the worker.
 - `filterOptions` (required): The filterOptions object is required, however, the properties inside are optional as it provides filtering options.
 
-  ## REQUEST BODY OPTIONS FOR ENDPOINT byworkerId
-
+### Request Body Examples
+```
   Example: Worker across all locations
   {
-  "workerId": "1",
-  "filterOptions": {
-
-      }
-
+    "workerId": "1",
+    "filterOptions": {}
   }
 
   Example: Worker across a specific locaiton
   {
-  "workerId": "1",
-  "filterOptions": {
-  "locationId": "1"
-  }
+    "workerId": "1",
+    "filterOptions": {
+      "locationId": "1"
+      }
   }
 
   Example: A list of workers across a specific location
   {
-  "workerId": [1,2],
-  "filterOptions": {
-  "locationId": "1"
-  }
+    "workerId": [1,2],
+    "filterOptions": {
+      "locationId": "1"
+      }
   }
 
   Example: A list of workers across multiple locations
   {
-  "workerId": [1,2],
-  "filterOptions": {
-  "locationId": [1,3]
+    "workerId": [1,2],
+    "filterOptions": {
+      "locationId": [1,3]
+      }
   }
-  }
-
+```
 ### Responses
 
 200 OK: Returns a json with results of the query.
@@ -111,7 +108,7 @@ This endpoint retrieves total labor cost of a worker across all tasks and locati
 ### Sucessful Responses
 
 Example: Retriving records for the total labor costs of a workerId 1. 
-
+```
 {
   "records": {
     "totalCosts": [
@@ -132,31 +129,13 @@ Example: Retriving records for the total labor costs of a workerId 1.
     ]
   }
 }
-
+```
 ### Error Response
 
 400 Bad Request: If the request body does not meet the validation criteria. The response will include details about the validation errors.
 
 Example Error Response (400 Bad Request)
-{
-  "errors": [
-    {
-      "msg": "Invalid value",
-      "param": "locationId",
-      "location": "body"
-    },
-    {
-      "msg": "LocationId must be a number or an array of numbers",
-      "param": "locationId",
-      "location": "body"
-    },
-    {
-      "msg": "Invalid value",
-      "param": "filterOptions",
-      "location": "body"
-    }
-  ]
-}
+```
 {
   "errors": [
     {
@@ -176,7 +155,7 @@ Example Error Response (400 Bad Request)
     }
   ]
 }
-
+```
 
 ### Gather Total Costs for Tasks Associated to a Given Location
 
@@ -188,7 +167,7 @@ This endpoint retrieves the total labor cost for tasks associated to a specific 
 - `filterOptions` (required): The filterOptions object is required, however, the properties inside are optional as it provides filtering options.
 
 ### Request Body Examples
-
+```
 {
   "locationId": 1,
   "filterOptions": {
@@ -216,7 +195,7 @@ This endpoint retrieves the total labor cost for tasks associated to a specific 
     "workerId": [1,3]
   }
 }
-
+```
 ### Responses
 
 200 OK: Returns a json with results of the query.
@@ -226,7 +205,7 @@ This endpoint retrieves the total labor cost for tasks associated to a specific 
 ### Sucessful Responses
 
 Example: Retriving a record for both workerId's 1 and 3, for the location Egypt(locationId 3).
-
+```
 {
   "records": {
     "totalLaborCosts": [
@@ -247,12 +226,14 @@ Example: Retriving a record for both workerId's 1 and 3, for the location Egypt(
     ]
   }
 }
-
+```
 ### Error Response
 
 400 Bad Request: If the request body does not meet the validation criteria. The response will include details about the validation errors.
 
 Example Error Response (400 Bad Request)
+
+```
 {
   "errors": [
     {
@@ -272,6 +253,7 @@ Example Error Response (400 Bad Request)
     }
   ]
 }
+```
 
 ## Conclusions
 
