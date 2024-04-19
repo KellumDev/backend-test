@@ -2,7 +2,6 @@ import * as mariadb from "mariadb";
 import DB_POOL from "/code/util/db.js";
 
 export class WorkerService {
-
   //testing to make sure service is being called.
   async getWorkersByCriteria(criteria) {
     return [];
@@ -31,48 +30,68 @@ export class WorkerService {
     let connection;
 
     try {
+      // parse the req body
       const { workerId } = reqBody;
       const { locationId, status } = reqBody.filterOptions;
 
-      let condition = `w.id = ${workerId}`;
-      
-      // if a set of worker ids is passed
-      if (workerIds && workerIds.length > 0) {
-        const workerIdList = workerIds.join(', ');  
-        condition += ` AND w.id IN (${workerIdList})`;
+      let condition = ``;
+
+      // check if worker id is an array or a number to produce proper where clause
+      if (Array.isArray(workerId) && workerId.length > 0) {
+        const workerIdList = workerId.join(", ");
+        condition += `w.id IN (${workerIdList})`;
+      } else if (typeof workerId === "number") {
+        condition += `w.id = ${workerId}`;
       }
 
-      // handling for optional filter on location
-      if (locationId !== null && locationId !== undefined) {
-        condition += ` AND loc.id = ${locationId}`;
+      // check if location id is an array or a number to produce proper where clause
+      if (Array.isArray(locationId) && locationId.length > 0) {
+        const locationIdList = locationId.join(", ");
+        condition += ` AND l.id IN (${locationIdList})`;
+      } else if (typeof locationId === "number") {
+        condition += ` AND l.id = ${locationId}`;
       }
-      
-      // handling for optional filter on status
-      if (status !== null && status !== undefined) {
-        condition += ` AND t.status = '${status}'`;
-      } 
 
+      //use the connection pool
       connection = await DB_POOL.getConnection();
       connection.queryOptions = { timeout: 10000 };
 
+      //query to run
       const sqlQuery = `
             SELECT 
-              loc.name AS location, 
-              t.description AS task_performed,
-              t.status AS tasks_status,
-              ROUND(SUM(l.time_seconds / 3600)) AS total_hours_work,
-              ROUND(SUM(l.time_seconds / 3600 * w.hourly_wage)) AS total_cost
-            FROM locations loc
-            LEFT JOIN tasks t ON loc.id = t.location_id
-            LEFT JOIN logged_time l ON t.id = l.task_id
-            LEFT JOIN workers w ON l.worker_id = w.id
+              username,
+              location,
+              hourly_wage,
+              ROUND(SUM(total_hours_work)) AS total_hours_work,
+              ROUND(SUM(total_cost)) AS total_cost
+            FROM (SELECT 
+              w.username AS username, 
+              l.name AS location,
+              w.hourly_wage AS hourly_wage,
+              lt.time_seconds / 3600 AS total_hours_work,
+              lt.time_seconds / 3600 * w.hourly_wage AS total_cost
+            FROM logged_time lt
+            JOIN 
+              workers w ON lt.worker_id = w.id
+            JOIN 
+              tasks t ON lt.task_id = t.id
+            JOIN 
+              locations l ON lt.location_id = l.id
             WHERE 
-            ${condition}
+              ${condition}
+            ) AS labor_costs
             GROUP BY 
-              loc.name;
+              username, 
+              location,
+              hourly_wage;
             `;
-
-      const rows = await connection.query(sqlQuery);
+      //run the query
+      let rows = await connection.query(sqlQuery);
+      
+      // check if there is an empty set 
+      if (rows.length === 0) {
+        rows = "no records found";
+      }
 
       return rows;
     } catch (error) {

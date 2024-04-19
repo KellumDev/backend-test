@@ -35,72 +35,256 @@ by bringing the DB container down:
 docker compose down
 ```
 
-### Edits 
-
-Converted the build-schema file to DOS/Windows-style line endings to ensure the script is executable. May need to reverse later. 
-
-# Total Labor Cost API
-This api allows the user to render total labor 
-cost of that worker across all tasks and locations by a provided worker id. You can also get the total labor cost for tasks tied to a given location by providing a location id. 
 
 
-### Endpoints
-GET /api/byworkerId -  c
-GET /api/bylocationId - the total labor cost for tasks tied to a given location
+ 
+*** Heads Up *** <span style="color:red">I Converted the build-schema file to DOS/Windows-style line endings to ensure the script is executable. May need to reverse later if there are any issues when running initial docker compose up.</span>
 
+## Total Labor Cost API Documentation
 
-### Gather Labor Cost By Worker ID 
-This endpoint retrieves This endpoint retrieves workers based on the provided user ID (userid). The userid property is required, while the properties inside filterOptions are optional. If filterOptions are provided, they can be used to filter workers based on status and/or location ID.
+This api provides a client with information to use within a graph, providing the total cost of a specific worker across all tasks and locations. Also the total labor cost for a tasks tied to a given location.
 
-### Request Body 
+## Endpoints
 
-byworkerId
-{
-  "userid": "someUserId",
+### GET /api/byworkerId
+
+Retrieve the total cost of a worker across all tasks and locations.
+
+### GET /api/bylocationId
+
+Retrieve the total labor cost for tasks tied to a given location.
+
+## Endpoint Descriptions
+
+### Gather Labor Cost By Worker ID
+
+This endpoint retrieves total labor cost of a worker across all tasks and locations. It will return a list of the username, location, wage, total hours worked and total cost. All in which are grouped by location. 
+
+### Request Body Examples
+
+### Request Parameters
+
+- `workerId` (required): The ID of the worker.
+- `filterOptions` (required): The filterOptions object is required, however, the properties inside are optional as it provides filtering options.
+
+  ## REQUEST BODY OPTIONS FOR ENDPOINT byworkerId
+
+  Example: Worker across all locations
+  {
+  "workerId": "1",
   "filterOptions": {
-    "status": "complete",
-    "locationId": "1"
+
+      }
+
+  }
+
+  Example: Worker across a specific locaiton
+  {
+  "workerId": "1",
+  "filterOptions": {
+  "locationId": "1"
+  }
+  }
+
+  Example: A list of workers across a specific location
+  {
+  "workerId": [1,2],
+  "filterOptions": {
+  "locationId": "1"
+  }
+  }
+
+  Example: A list of workers across multiple locations
+  {
+  "workerId": [1,2],
+  "filterOptions": {
+  "locationId": [1,3]
+  }
+  }
+
+### Responses
+
+200 OK: Returns a json with results of the query.
+
+400 Bad Request: If the request body does not meet the validation criteria.
+
+### Sucessful Responses
+
+Example: Retriving records for the total labor costs of a workerId 1. 
+
+{
+  "records": {
+    "totalCosts": [
+      {
+        "username": "tcowserf",
+        "location": "America",
+        "hourly_wage": "35.23",
+        "total_hours_work": "68",
+        "total_cost": "2397"
+      },
+      {
+        "username": "tcowserf",
+        "location": "Egypt",
+        "hourly_wage": "35.23",
+        "total_hours_work": "53",
+        "total_cost": "1853"
+      }
+    ]
   }
 }
 
-## Responses
-200 OK: Returns an array of the given worker with the associated total labor costs, hours worked, tasks status acrossed all locations.  
+### Error Response
 
-400 Bad Request: If the request body does not meet the validation criteria. 
-
-### Sucessful Responses
-Example: filtering with the workerId and locationId, will provide results for the specific location worked. 
-
-{
-    "location": "Argentina",
-    "task_performed": "Plumbing & Medical Gas",
-    "tasks_status": "complete",
-    "total_hours_work": "53",
-    "total_cost": "1896"
-  }
-
-
-### Error Response 
-400 Bad Request: If the request body does not meet the validation criteria. The response will include details about the validation errors. 
+400 Bad Request: If the request body does not meet the validation criteria. The response will include details about the validation errors.
 
 Example Error Response (400 Bad Request)
 {
   "errors": [
     {
-      "value": "",
+      "msg": "Invalid value",
+      "param": "locationId",
+      "location": "body"
+    },
+    {
+      "msg": "LocationId must be a number or an array of numbers",
+      "param": "locationId",
+      "location": "body"
+    },
+    {
+      "msg": "Invalid value",
+      "param": "filterOptions",
+      "location": "body"
+    }
+  ]
+}
+{
+  "errors": [
+    {
       "msg": "Invalid value",
       "param": "workerId",
+      "location": "body"
+    },
+    {
+      "msg": "Invalid value",
+      "param": "filterOptions",
+      "location": "body"
+    },
+    {
+      "msg": "Invalid value",
+      "param": "filterOptions",
       "location": "body"
     }
   ]
 }
 
-## Conclusions 
-I used a left join to display all data even for unmatched items so in the future when aggregating the average cost or other things these rows can be included to help with averaging as much as possible. 
 
+### Gather Total Costs for Tasks Associated to a Given Location
 
-## Improvments 
-- could add dto to handle client data
-- could add custom sanitation for validating request bodies 
-- could provide a 
-- I would have liked to add a frontend gui just for fun and demostration purposes but I ran out of time. 
+This endpoint retrieves the total labor cost for tasks associated to a specific location. It will return a list or single record with the location name , task performed, the worker that performed the task, total labor cost and the status of the tasks(complete/incomplete). All in which are grouped by the location.
+
+### Request Parameters
+
+- `locationId` (required): The ID of the location, can be a number or a list.
+- `filterOptions` (required): The filterOptions object is required, however, the properties inside are optional as it provides filtering options.
+
+### Request Body Examples
+
+{
+  "locationId": 1,
+  "filterOptions": {
+
+  }
+}
+
+{
+  "locationId": 1,
+  "filterOptions": {
+    "workerId": 1
+  }
+}
+
+{
+  "locationId": [1,2],
+  "filterOptions": {
+  "workerId": 1
+  }
+}
+
+{
+  "locationId": [1,2],
+  "filterOptions": {
+    "workerId": [1,3]
+  }
+}
+
+### Responses
+
+200 OK: Returns a json with results of the query.
+
+400 Bad Request: If the request body does not meet the validation criteria.
+
+### Sucessful Responses
+
+Example: Retriving a record for both workerId's 1 and 3, for the location Egypt(locationId 3).
+
+{
+  "records": {
+    "totalLaborCosts": [
+      {
+        "location_name": "Egypt",
+        "task_description": "Basic Door and Window Materials and Methods",
+        "performed_by": "ewooffj",
+        "status": "complete",
+        "total_labor_cost": "2486"
+      },
+      {
+        "location_name": "Egypt",
+        "task_description": "Wood Fences and Gates",
+        "performed_by": "bcrossmang",
+        "status": "complete",
+        "total_labor_cost": "698"
+      }
+    ]
+  }
+}
+
+### Error Response
+
+400 Bad Request: If the request body does not meet the validation criteria. The response will include details about the validation errors.
+
+Example Error Response (400 Bad Request)
+{
+  "errors": [
+    {
+      "msg": "Invalid value",
+      "param": "locationId",
+      "location": "body"
+    },
+    {
+      "msg": "LocationId must be a number or an array of numbers",
+      "param": "locationId",
+      "location": "body"
+    },
+    {
+      "msg": "Invalid value",
+      "param": "filterOptions",
+      "location": "body"
+    }
+  ]
+}
+
+## Conclusions
+
+For each endpoint, I opted for a request body paired with a validator. While query parameters could have served the same purpose, employing a request body introduces an extra layer of security, a crucial consideration in any API environment. Additionally, including validation is always essential for clients to effectively manage error handling, particularly during POST requests.
+
+In regards to data querying, I consistently used subquerying to conduct aggregations on intermediate results. This ensures both organization and adaptability for potential future scenarios, such as calculating averages or executing other operations. By executing these calculations in the outer query, updates can be made quickly, and readability is preserved.
+
+Additionally, I employed inner joins to exclusively display matched items, thereby eliminating redundant results for clients. This streamlines data presentation and enhances the overall efficiency of the system.
+
+## Improvments
+
+- Could add custom sanitation to eliminate SQL injections.
+- Could add dto to parse and handle request bodies from the client.
+- Could add indexing to improve performance.
+- Implementation of CORS to allow the connection of a client.
+

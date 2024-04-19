@@ -2,6 +2,7 @@ import { body, validationResult } from 'express-validator';
  
 export const validateLocationRequest = [
   body('locationId').notEmpty().custom((value) => {
+    // Check if locationId is a single number or an array of numbers
     if (typeof value === 'number' || (Array.isArray(value) && value.every(num => typeof num === 'number'))) {
       return true;
     }

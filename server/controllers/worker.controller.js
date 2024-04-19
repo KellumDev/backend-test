@@ -34,12 +34,13 @@ export class WorkerController {
 
   async getTotalCostByWorkerId(req, res)  {
     try {
-   
+      //parse the req body
       const reqBody = req.body;
-      const workers = await workerService.getTotalCostAllLocationTasksByWorkerId(reqBody);
+      //call service and get query
+      const totalCosts = await workerService.getTotalCostAllLocationTasksByWorkerId(reqBody);
       
       // respond with json
-      res.json(workers);
+      res.json({records: {totalCosts}});
     } catch (error) {
       // handle errors and send an appropriate response
       console.error('Error fetching labor costs:', error);

@@ -20,12 +20,11 @@ export class LocationController {
     try {
       // parse req and res
       const criteria = req.body;
-
       // call service
-      const locations = await locationService.getLaborCostAssociatedToLocation(criteria);
+      const totalLaborCosts = await locationService.getLaborCostAssociatedToLocation(criteria);
 
       // respond as a json
-      res.json(locations);
+      res.json({records: {totalLaborCosts}});
     } catch (error) {
       // handle errors
       console.error('Error fetching labor cost for locations:', error);
