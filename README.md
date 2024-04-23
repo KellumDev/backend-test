@@ -157,7 +157,7 @@ Example Error Response (400 Bad Request)
 }
 ```
 
-### Gather Total Costs for Tasks Associated to a Given Location
+## Gather Total Costs for Tasks Associated to a Given Location
 
 This endpoint retrieves the total labor cost for tasks associated to a specific location. It will return a list or single record with the location name , task performed, the worker that performed the task, total labor cost and the status of the tasks(complete/incomplete). All in which are grouped by the location.
 
@@ -257,7 +257,7 @@ Example Error Response (400 Bad Request)
 
 ## Conclusions
 
-For each endpoint, I opted for a request body paired with a validator. While query parameters could have served the same purpose, employing a request body introduces an extra layer of security, a crucial consideration in any API environment. Additionally, including validation is always essential for clients to effectively manage error handling, particularly during POST requests.
+For each endpoint, I opted for a request body paired with a validator. While query parameters could have served the same purpose, employing a request body introduces an extra layer of security.
 
 In regards to data querying, I consistently used subquerying to conduct aggregations on intermediate results. This ensures both organization and adaptability for potential future scenarios, such as calculating averages or executing other operations. By executing these calculations in the outer query, updates can be made quickly, and readability is preserved.
 
@@ -268,5 +268,4 @@ Additionally, I employed inner joins to exclusively display matched items, there
 - Could add custom sanitation to eliminate SQL injections.
 - Could add dto to parse and handle request bodies from the client.
 - Could add indexing to improve performance.
-- Implementation of CORS to allow the connection of a client.
-
+- Implementation of CORS to efficiently handle the connection of a client.
